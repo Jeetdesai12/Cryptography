@@ -1,0 +1,64 @@
+RSA Explaination and Cryptanalysis:
+
+RSA Encryption and Decryption Basics:
+
+1. Key Generation:
+
+First, we will choose two big prime numbers `p` and `q` randomly.
+These primes are used to compute a number `n = p * q`, which is used as the modulus for both the public and private keys.
+We also calculate a value called Euler’s totient `phi(n) = (p-1)*(q-1)`, which helps in generating the keys.
+   
+2. Public Key and Private Key:
+
+The public key consists of the number `e` and the modulus `n`. The private key is the number `d`, which is the modular inverse of `e` with respect to `phi(n)`. 
+To find `d`, we use a mathematical method called the Extended Euclidean Algorithm.
+   
+   How Extended Euclidean Algorithm Works:
+
+   The Extended Euclidean Algorithm is a method used to find the modular inverse of `e` with respect to `phi(n)`. The basic Euclidean Algorithm is used to find the greatest common divisor (GCD) of two numbers. The extended version also computes the coefficients (often called `x` and `y`) that satisfy the equation:
+   `e * x + phi(n) * y = gcd(e, phi(n))`.
+   
+   In RSA, we want to find `d`, which is the modular inverse of `e` modulo `phi(n)`. This means we need to find `d` such that:
+   `e * d ≡ 1 (mod phi(n))`.
+   
+   Using the Extended Euclidean Algorithm, we compute the greatest common divisor of `e` and `phi(n)`, and at the same time, we find the coefficient `d` (modular inverse). If `gcd(e, phi(n)) = 1`, then the modular inverse `d` exists and is used as the private key.
+
+3. Encryption and Decryption:
+   Encryption: When you want to send a secure message, you encrypt it using the public key. The encrypted message is calculated as `message^e % n`.
+   Decryption: The recipient can decrypt the message using their private key by calculating `cipher^d % n`. The clever part is that, because of the math behind RSA, only the recipient can decrypt the message, even though anyone can encrypt it with the public key.
+
+Cryptanalysis (How RSA Security Works):
+
+1. The Security of RSA:
+RSA’s security is based on the difficulty of factoring a large number `n` into its prime factors `p` and `q`. If someone could easily factor `n`, they could compute `p` and `q` and, from there, break the encryption.
+The reason RSA works is that factoring large numbers is really hard. For example, if you have a large number with hundreds of digits, there are no known fast ways to break it apart into its prime factors. This is what makes RSA secure.
+
+2. Key Size Matters:
+RSA is only as secure as the size of the key. A small key size, like 512 bits, is easily breakable with modern computing power. This is why today, 2048-bit keys or higher are recommended for secure encryption.
+The larger the key, the harder it is to factor `n`. For instance, a 2048-bit key has a modulus `n` that is a 617-digit number, which is extremely difficult to factor using current technology.
+
+3. Discrete Logarithm Problem:
+RSA is based on the difficulty of factoring large numbers, but other encryption systems, like Diffie-Hellman and ElGamal, are based on a different hard problem called the Discrete Logarithm Problem (DLP).
+In DLP, the task is to find the exponent in an equation like `g^x ≡ h (mod p)`. While both RSA and DLP are based on hard problems, they are different ways of ensuring encryption security.
+
+Cryptanalysis on Key Components:
+
+1. Key Size and Security:
+The key size is one of the most critical factors in RSA's security. Larger key sizes are exponentially harder to crack due to the difficulty of factoring large numbers. 
+`p` and `q` are the two prime numbers used to compute the modulus `n`. The size of `p` and `q` directly affects the security of the encryption. If `p` and `q` are too small (for example, if they are 256-bit primes), it becomes possible to factor `n` and break the encryption.
+Typically, RSA key sizes of 2048 bits or higher are recommended. A 2048-bit RSA key implies that `n` will have approximately 617 digits, making it significantly harder to factor. In contrast, a 512-bit RSA key is considered insecure because modern algorithms can easily factor numbers of this size.
+
+2. The Role of `e`:
+The public exponent `e` is an important parameter in the RSA algorithm. It is typically chosen to be a small prime number like 3 or 65537. This ensures that encryption is fast because smaller exponents result in fewer computational operations.
+However, `e` must also be chosen so that it is coprime with `phi(n)`. In other words, `gcd(e, phi(n))` should be 1. If `e` shares a factor with `phi(n)`, it will not be possible to compute the private key `d`.
+
+3. The Role of `d` (Private Key):
+The private key `d` is calculated as the modular inverse of `e` modulo `phi(n)`. This means that `e * d ≡ 1 (mod phi(n))`. The value of `d` is critical for the decryption process.
+The security of the private key `d` depends on the difficulty of computing the modular inverse. In theory, `d` is always a large number, and in practice, it can be quite large, especially when `n` is large. 
+For small key sizes, the value of `d` can be computed relatively easily. However, with larger key sizes (2048 bits or more), the value of `d` becomes computationally hard to determine, which strengthens the security of RSA.
+
+4. The Role of `p` and `q` (Prime Factors):
+The two primes `p` and `q` are essential in generating the modulus `n` and the totient `phi(n)`. If an attacker can find these primes, they can easily compute the private key `d` and break the encryption.
+The primes `p` and `q` should be sufficiently large and chosen randomly to ensure that `n` is difficult to factor. The prime numbers must also be kept secret because if `p` and `q` are revealed, the entire RSA encryption scheme becomes compromised.
+A strong cryptographic system ensures that the prime numbers `p` and `q` are generated randomly and are large enough to resist factoring attacks. A typical size for `p` and `q` in secure RSA implementations is around 1024 bits each, resulting in a 2048-bit key size.
+
